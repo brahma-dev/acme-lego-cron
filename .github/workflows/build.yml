@@ -1,0 +1,38 @@
+name: build
+
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '45 13 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Login to github docker registry
+      run: echo "${DOCKERHUB_REGISTRY_PASSWORD}" | docker login https://docker.pkg.github.com -u "${DOCKERHUB_REGISTRY_USER}" --password-stdin
+      env:
+        DOCKERHUB_REGISTRY_USER: ${{ github.actor }}
+        DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+    - name: Fetch lego release version
+      run: |
+        curl -sL https://api.github.com/repos/go-acme/lego/releases/latest | \
+        jq -r ".tag_name" > latestversion.txt
+    - name: Get latest lego image
+      run: |
+        version=$(cat latestversion.txt) \
+        && docker pull goacme/lego:$version
+    - name: Build Image
+      run: |
+        version=$(cat latestversion.txt) \
+        && docker build --build-arg VERSION=$version -t docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:$version . \
+        && docker build --build-arg VERSION=$version -t docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:latest .
+    - name: Push Image
+      run: |
+        version=$(cat latestversion.txt) \
+        && docker push docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:$version \
+        && docker push docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:latest
+    - name: Clean-up
+      run: docker logout
+      if: always()
