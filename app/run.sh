@@ -6,7 +6,7 @@ error() {
 }
 
 STAGING=${STAGING:-}
-
+LEGO_ARGS=${LEGO_ARGS:-}
 MODE=${MODE:-renew}
 
 # Get endpoint
@@ -32,7 +32,7 @@ KEY_TYPE=${KEY_TYPE-ec384}
 
 if [ -n "$PROVIDER" ]; then
     DNS_TIMEOUT=${DNS_TIMEOUT:-10}
-    /usr/bin/lego --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --dns $PROVIDER --domains $DOMAINS --email $EMAIL_ADDRESS --dns-timeout $DNS_TIMEOUT $MODE
+    /usr/bin/lego --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem --dns $PROVIDER --dns-timeout $DNS_TIMEOUT $LEGO_ARGS $MODE
 else
-    /usr/bin/lego --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS $MODE
+    /usr/bin/lego --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem $LEGO_ARGS $MODE
 fi
