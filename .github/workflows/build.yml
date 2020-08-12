@@ -3,13 +3,18 @@ name: build
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '45 13 * * *'
+    - cron:  '35 15 * * *'
 
 jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
+    - name: Login to docker registry
+      run: echo "${DOCKERHUB_REGISTRY_PASSWORD}" | docker login -u "${DOCKERHUB_REGISTRY_USER}" --password-stdin
+      env:
+        DOCKERHUB_REGISTRY_USER: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
+        DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
     - name: Login to github docker registry
       run: echo "${DOCKERHUB_REGISTRY_PASSWORD}" | docker login https://docker.pkg.github.com -u "${DOCKERHUB_REGISTRY_USER}" --password-stdin
       env:
@@ -27,12 +32,16 @@ jobs:
       run: |
         version=$(cat latestversion.txt) \
         && docker build --build-arg VERSION=$version -t docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:$version . \
-        && docker build --build-arg VERSION=$version -t docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:latest .
+        && docker build --build-arg VERSION=$version -t docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:latest . \
+        && docker build --build-arg VERSION=$version -t brahmadev/acme-lego-cron:$version . \
+        && docker build --build-arg VERSION=$version -t brahmadev/acme-lego-cron:latest .
     - name: Push Image
       run: |
         version=$(cat latestversion.txt) \
         && docker push docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:$version \
-        && docker push docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:latest
+        && docker push docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:latest \
+        && docker push brahmadev/acme-lego-cron:$version \
+        && docker push brahmadev/acme-lego-cron:latest
     - name: Clean-up
       run: docker logout
       if: always()

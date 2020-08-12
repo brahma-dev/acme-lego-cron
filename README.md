@@ -2,7 +2,7 @@
 
 [![github-actions](https://github.com/brahma-dev/acme-lego-cron/workflows/build/badge.svg)](https://github.com/brahma-dev/acme-lego-cron/actions)
 
-Dockerized [Lego](https://go-acme.github.io/lego/) with cron.
+Dockerized [Lego](https://go-acme.github.io/lego/) with cron. Caters to DNS ACME challenge; other challenges can be worked out using `LEGO_ARGS`.
 
 ## Environment variables
 
@@ -24,7 +24,7 @@ Environment variables are used to control various steps of the automation proces
 
 ## Examples
 
-This example get wildcard certificates for `example.com`, one certificate for `*.example.com`, and one for `example.com` using cloudflare dns :
+This example get one certificate for `*.example.com` and `example.com` using cloudflare dns :
 
 You can share the same volume `letsencrypt` with other machines
 
