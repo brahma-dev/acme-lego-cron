@@ -26,14 +26,16 @@ Environment variables are used to control various steps of the automation proces
 
 This example get one certificate for `*.example.com` and `example.com` using cloudflare dns :
 
-You can share the same volume `letsencrypt` with other machines
+- Use staging endpoint during development.
+- You can share the same volume `letsencrypt` with other machines.
 
 ```yaml
 version: "3"
 services:
   lego:
-    image: docker.pkg.github.com/brahma-dev/acme-lego-cron/acme-lego-cron:latest
+    image: brahmadev/acme-lego-cron:latest
     environment:
+      STAGING: 1
       DOMAINS: "example.com;*.example.com"
       EMAIL_ADDRESS: user@example.com
       CLOUDFLARE_DNS_API_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
