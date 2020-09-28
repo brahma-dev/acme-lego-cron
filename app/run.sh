@@ -5,13 +5,13 @@ error() {
     echo -e "[$( date '+%Y-%m-%d %H:%M:%S' )] $1" >&2
 }
 
-STAGING=${STAGING:-}
+STAGING=${STAGING:-0}
 LEGO_ARGS=${LEGO_ARGS:-}
 MODE=${MODE:-renew}
 
 # Get endpoint
 ENDPOINT='https://acme-v02.api.letsencrypt.org/directory'
-[ -n "$STAGING" ] && ENDPOINT='https://acme-staging-v02.api.letsencrypt.org/directory'
+["1" == "$STAGING" ] && ENDPOINT='https://acme-staging-v02.api.letsencrypt.org/directory'
 
 DOMAINS=${DOMAINS:-}
 DOMAINS=$(  ( [ -n "$DOMAINS" ] && echo ${DOMAINS//;/ --domains } ) )
