@@ -4,7 +4,7 @@ FROM goacme/lego:${VERSION}
 
 MAINTAINER Brahma Dev
 
-COPY app /app
+COPY app/*.sh /app
 RUN chown -R root:root /app
 RUN chmod -R 550 /app
 RUN chmod +x app/*.sh
