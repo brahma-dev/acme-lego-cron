@@ -2,6 +2,6 @@
 set -a
 
 #RUN it once to initiate
-MODE=run ./run.sh
+MODE=run /app/run.sh
 
 crond -f
