@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Login to docker registry
-      run: echo "${DOCKERHUB_REGISTRY_PASSWORD}" | docker login -u "${DOCKERHUB_REGISTRY_USER}" --password-stdin
+      run: echo "${DOCKERHUB_REGISTRY_PASSWORD}" | /usr/bin/docker login -u "${DOCKERHUB_REGISTRY_USER}" --password-stdin
       env:
         DOCKERHUB_REGISTRY_USER: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
         DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
