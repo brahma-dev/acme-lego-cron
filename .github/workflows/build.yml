@@ -36,12 +36,12 @@ jobs:
       run: |
         version=$(cat latestversion.txt) \
         && docker buildx build \
-        --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8 \
+        --platform linux/amd64,linux/arm/v7,linux/arm64 \
         --output "type=image,push=true" \
         --build-arg VERSION=$version \
         --tag brahmadev/acme-lego-cron:$version . \
         && docker buildx build \
-        --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8 \
+        --platform linux/amd64,linux/arm/v7,linux/arm64 \
         --output "type=image,push=true" \
         --build-arg VERSION=$version \
         --tag brahmadev/acme-lego-cron:latest .
