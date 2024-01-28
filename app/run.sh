@@ -11,7 +11,7 @@ MODE=${MODE:-renew}
 
 # Get endpoint
 ENDPOINT='https://acme-v02.api.letsencrypt.org/directory'
-["1" == "$STAGING" ] && ENDPOINT='https://acme-staging-v02.api.letsencrypt.org/directory'
+[ "1" == "$STAGING" ] && ENDPOINT='https://acme-staging-v02.api.letsencrypt.org/directory'
 
 DOMAINS=${DOMAINS:-}
 DOMAINS=$(  ( [ -n "$DOMAINS" ] && echo ${DOMAINS//;/ --domains } ) )
