@@ -1,9 +1,16 @@
 # Dockerfile: https://hub.docker.com/r/goacme/lego/
+
 ARG VERSION
-FROM goacme/lego:${VERSION}
+FROM goacme/lego:${VERSION} AS lego
 
+ARG VERSION
+FROM alpine:3
 LABEL maintainer="me@brahma.world"
+RUN apk update \
+    && apk add --no-cache ca-certificates tzdata \
+    && update-ca-certificates
 
+COPY --from=lego /lego /
 COPY app/*.sh /app/
 RUN chown -R root:root /app
 RUN chmod -R 550 /app
@@ -19,4 +26,5 @@ RUN chown -R root:root /var/spool/cron/crontabs/root && chmod -R 640 /var/spool/
 STOPSIGNAL SIGKILL
 
 RUN ls -al /app
-ENTRYPOINT "/app/cron.sh"
+WORKDIR /app
+ENTRYPOINT [ "./cron.sh", ""]
