@@ -61,12 +61,6 @@ jobs:
         subject-name: ghcr.io/brahma-dev/acme-lego-cron
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
-    - name: Generate artifact attestation
-      uses: actions/attest-build-provenance@v1
-      with:
-        subject-name: brahmadev/acme-lego-cron
-        subject-digest: ${{ steps.push.outputs.digest }}
-        push-to-registry: true
     - name: Clean-up
       run: rm -f ${HOME}/.docker/config.json
       if: always()
