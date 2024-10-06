@@ -58,12 +58,6 @@ jobs:
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v1
       with:
-        subject-name: ghcr.io/brahma-dev/acme-lego-cron:latest
-        subject-digest: ${{ steps.push.outputs.digest }}
-        push-to-registry: true
-    - name: Generate artifact attestation
-      uses: actions/attest-build-provenance@v1
-      with:
         subject-name: brahmadev/acme-lego-cron:latest
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
