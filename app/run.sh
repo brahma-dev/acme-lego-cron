@@ -38,6 +38,8 @@ else
     HOOK=""
 fi
 
+echo HOOK is $HOOK
+
 if [ -n "$PROVIDER" ]; then
     DNS_TIMEOUT=${DNS_TIMEOUT:-10}
     /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem --dns $PROVIDER --dns-timeout $DNS_TIMEOUT $LEGO_ARGS $MODE $HOOK
