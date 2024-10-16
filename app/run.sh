@@ -32,7 +32,9 @@ KEY_TYPE=${KEY_TYPE-ec384}
 
 if [ -n "$PROVIDER" ]; then
     DNS_TIMEOUT=${DNS_TIMEOUT:-10}
-    /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem --dns $PROVIDER --dns-timeout $DNS_TIMEOUT $LEGO_ARGS $MODE
+    RUN_HOOK=${RUN_HOOK:+--run-hook $RUN_HOOK}
+    /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem --dns $PROVIDER --dns-timeout $DNS_TIMEOUT $LEGO_ARGS $MODE $RUN_HOOK
 else
-    /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem $LEGO_ARGS $MODE
+    RENEW_HOOK=${RENEW_HOOK:+--renew-hook $RENEW_HOOK}
+    /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem $LEGO_ARGS $MODE $RENEW_HOOK
 fi
