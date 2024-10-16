@@ -31,9 +31,9 @@ EMAIL_ADDRESS=${EMAIL_ADDRESS:-}
 KEY_TYPE=${KEY_TYPE-ec384}
 
 if [ "$MODE" = "run" ]; then
-    HOOK=${RUN_HOOK:+--run-hook "$RUN_HOOK"}
+    HOOK=${RUN_HOOK:+--run-hook \"$RUN_HOOK\"}
 elif [ "$MODE" = "renew" ]; then
-    HOOK=${RENEW_HOOK:+--renew-hook "$RENEW_HOOK"}
+    HOOK=${RENEW_HOOK:+--renew-hook \"$RENEW_HOOK\"}
 else
     HOOK=""
 fi
