@@ -30,9 +30,19 @@ EMAIL_ADDRESS=${EMAIL_ADDRESS:-}
 
 KEY_TYPE=${KEY_TYPE-ec384}
 
+if [ "$MODE" = "run" ]; then
+    HOOK=${RUN_HOOK:+--run-hook \"$RUN_HOOK\"}
+elif [ "$MODE" = "renew" ]; then
+    HOOK=${RENEW_HOOK:+--renew-hook \"$RENEW_HOOK\"}
+else
+    HOOK=""
+fi
+
+echo HOOK is $HOOK
+
 if [ -n "$PROVIDER" ]; then
     DNS_TIMEOUT=${DNS_TIMEOUT:-10}
-    /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem --dns $PROVIDER --dns-timeout $DNS_TIMEOUT $LEGO_ARGS $MODE
+    /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem --dns $PROVIDER --dns-timeout $DNS_TIMEOUT $LEGO_ARGS $MODE $HOOK
 else
-    /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem $LEGO_ARGS $MODE
+    /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem $LEGO_ARGS $MODE $HOOK
 fi
