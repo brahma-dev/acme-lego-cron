@@ -22,15 +22,18 @@ Environment variables are used to control various steps of the automation proces
 
 --------------------
 
+## Hooks
+
+You can mount a shell script to /app/hook.sh to run whenever a cert is issued. This image comes with bash/curl/wget/jq preinstalled.
+
 ## Examples
 
 This example get one certificate for `*.example.com` and `example.com` using cloudflare dns :
 
 - Use staging endpoint during development.
-- You can share the same volume `letsencrypt` with other machines.
+
 
 ```yaml
-version: "3"
 services:
   lego:
     image: brahmadev/acme-lego-cron:latest
@@ -42,5 +45,36 @@ services:
       PROVIDER: cloudflare
       LEGO_ARGS: "--dns.disable-cp --dns.resolvers 1.1.1.1"
     volumes:
-      - "letsencrypt:/letsencrypt"
+      - ./letsencrypt:/letsencrypt
+```
+With hook: Check [hook.sh](https://github.com/brahma-dev/acme-lego-cron/blob/main/app/hook.sh "hook.sh") for an example.
+```yaml
+services:
+  nginx:
+    container_name: nginx01
+    image: nginx:alpine
+    ports:
+    - mode: host
+      published: 443
+      target: 443
+    - mode: host
+      published: 80
+      target: 80
+    volumes:
+      - ./html/:/var/www/html
+      - ./nginx-example.conf:/etc/nginx/conf.d/default.conf
+      - "./letsencrypt:/letsencrypt"
+  lego:
+    image: brahmadev/acme-lego-cron:latest
+    environment:
+      STAGING: 1
+      DOMAINS: "example.com;*.example.com"
+      EMAIL_ADDRESS: user@example.com
+      CLOUDFLARE_DNS_API_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      PROVIDER: cloudflare
+      LEGO_ARGS: "--dns.disable-cp --dns.resolvers 1.1.1.1"
+    volumes:
+      - ./hook.sh:/app/hook.sh
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./letsencrypt:/letsencrypt
 ```

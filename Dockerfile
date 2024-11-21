@@ -6,16 +6,13 @@ FROM goacme/lego:${VERSION} AS lego
 ARG VERSION
 FROM alpine:3
 LABEL maintainer="me@brahma.world"
-RUN apk update \
-    && apk add --no-cache ca-certificates tzdata \
-    && update-ca-certificates
+RUN apk upgrade --no-cache && apk add ca-certificates tzdata bash curl wget jq --no-cache
 
 COPY --from=lego /lego /
 COPY app/*.sh /app/
 RUN chown -R root:root /app
 RUN chmod -R 550 /app
 RUN chmod +x /app/*.sh
-RUN dos2unix /app/*.sh
 
 RUN mkdir -p /letsencrypt
 
@@ -28,3 +25,7 @@ STOPSIGNAL SIGKILL
 RUN ls -al /app
 WORKDIR /app
 ENTRYPOINT [ "./cron.sh", ""]
+
+LABEL org.opencontainers.image.source="https://github.com/brahma-dev/acme-lego-cron/"
+LABEL org.opencontainers.image.description="Dockerized Lego with cron."
+LABEL org.opencontainers.image.licenses="MIT"

@@ -1,2 +1,3 @@
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 7 */12 * * * /app/run.sh
+15 15 * * 0 apk add --update-cache --upgrade apk-tools wget curl bash jq ca-certificates --no-cache

@@ -57,12 +57,12 @@ jobs:
           brahmadev/acme-lego-cron:${{ steps.legover.outputs.version }}
           ghcr.io/brahma-dev/acme-lego-cron:latest
           ghcr.io/brahma-dev/acme-lego-cron:${{ steps.legover.outputs.version }}
-    # - name: Generate artifact attestation
-    #   uses: actions/attest-build-provenance@v1
-    #   with:
-    #     subject-name: ghcr.io/brahma-dev/acme-lego-cron
-    #     subject-digest: ${{ steps.push.outputs.digest }}
-    #     push-to-registry: true
+    - name: Generate artifact attestation
+      uses: actions/attest-build-provenance@v1
+      with:
+        subject-name: ghcr.io/brahma-dev/acme-lego-cron
+        subject-digest: ${{ steps.push.outputs.digest }}
+        push-to-registry: true
     - name: Clean-up
       run: rm -f ${HOME}/.docker/config.json
       if: always()
