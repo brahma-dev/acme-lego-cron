@@ -57,7 +57,14 @@ jobs:
           brahmadev/acme-lego-cron:${{ steps.legover.outputs.version }}
           ghcr.io/brahma-dev/acme-lego-cron:latest
           ghcr.io/brahma-dev/acme-lego-cron:${{ steps.legover.outputs.version }}
-    - name: Generate artifact attestation
+    - name: Generate artifact attestation dockerhub
+      uses: actions/attest-build-provenance@v1
+      with:
+        subject-name: docker.io/brahmadev/acme-lego-cron
+        subject-digest: ${{ steps.push.outputs.digest }}
+        push-to-registry: true
+        artifact-type: application/vnd.cncf.notary.v2
+    - name: Generate artifact attestation ghcr
       uses: actions/attest-build-provenance@v1
       with:
         subject-name: ghcr.io/brahma-dev/acme-lego-cron
