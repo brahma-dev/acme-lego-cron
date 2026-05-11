@@ -7,7 +7,6 @@ error() {
 
 STAGING=${STAGING:-0}
 LEGO_ARGS=${LEGO_ARGS:-}
-MODE=${MODE:-renew}
 HOOK=${HOOK:-/app/hook.sh}
 
 # Get endpoint
@@ -31,12 +30,14 @@ EMAIL_ADDRESS=${EMAIL_ADDRESS:-}
 
 KEY_TYPE=${KEY_TYPE-ec384}
 
+printf "y\n" | /lego migrate --account-only || true
+
 if [[ -f $HOOK && -x "$HOOK" ]]; then
     if [ -n "$PROVIDER" ]; then
         DNS_TIMEOUT=${DNS_TIMEOUT:-10}
-        /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem --dns $PROVIDER --dns-timeout $DNS_TIMEOUT $LEGO_ARGS $MODE --${MODE}-hook=/app/hook.sh
+        /lego run --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem --dns $PROVIDER --dns-timeout $DNS_TIMEOUT $LEGO_ARGS --deploy-hook=/app/hook.sh
     else
-        /lego --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem $LEGO_ARGS $MODE --${MODE}-hook=/app/hook.sh
+        /lego run --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem $LEGO_ARGS --deploy-hook=/app/hook.sh
     fi
 else
     echo "File '$HOOK' is not executable or found"
