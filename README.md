@@ -22,6 +22,28 @@ Environment variables are used to control various steps of the automation proces
 
 --------------------
 
+## Non-root user
+
+> [!IMPORTANT]
+> Starting from version **v5**, this image uses `supercronic` instead of the standard `crond`. This allows for better signal handling and the ability to run as a non-root user.
+
+This image defaults to `root` to ensure backward compatibility and ease of use with volume mounts. However, it uses `supercronic` which allows it to run as any UID.
+
+To run as a non-root user, simply set the `user` in your docker-compose or docker run command. You **must** ensure the mounted volume (e.g. `./letsencrypt`) is writable by the UID you choose.
+
+```yaml
+services:
+  lego:
+    image: brahmadev/acme-lego-cron:latest
+    user: "1000:1000"
+    # ...
+```
+
+```bash
+# Before running as UID 1000
+chown -R 1000:1000 ./letsencrypt
+```
+
 ## Hooks
 
 You can mount a shell script to /app/hook.sh to run whenever a cert is issued. This image comes with bash/curl/wget/jq preinstalled.
