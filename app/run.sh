@@ -30,11 +30,11 @@ EMAIL_ADDRESS=${EMAIL_ADDRESS:-}
 
 KEY_TYPE=${KEY_TYPE-ec384}
 
-printf "y\n" | /lego migrate --account-only || true
+printf "y\n" | /lego migrate --path /letsencrypt --account-only || true
 
 if [[ -f $HOOK && -x "$HOOK" ]]; then
     if [ -n "$PROVIDER" ]; then
-        DNS_TIMEOUT=${DNS_TIMEOUT:-10}
+        DNS_TIMEOUT=${DNS_TIMEOUT:-10s}
         /lego run --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem --dns $PROVIDER --dns-timeout $DNS_TIMEOUT $LEGO_ARGS --deploy-hook=/app/hook.sh
     else
         /lego run --server $ENDPOINT --path /letsencrypt --accept-tos --key-type=$KEY_TYPE --domains $DOMAINS --email $EMAIL_ADDRESS --pem $LEGO_ARGS --deploy-hook=/app/hook.sh
