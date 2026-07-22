@@ -1,9 +1,7 @@
 name: Update Providers List
 
 on:
-  workflow_dispatch:  # Allow manual triggering
-  schedule:
-    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight UTC
+  workflow_dispatch:  # Allow manual triggering only
 
 jobs:
   update-providers:
