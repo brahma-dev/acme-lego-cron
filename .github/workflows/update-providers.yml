@@ -46,8 +46,6 @@ jobs:
                 process.exit(1);
               }
 
-              console.log('Found providers:', providers);
-
               // Format providers using the split function
               const split = (values, width) => {
                 const stack = values.reverse();
@@ -71,7 +69,6 @@ jobs:
               };
 
               const formatted = split(providers, 58);
-              console.log('Formatted result:', formatted);
               fs.writeFileSync('providers-list.txt', formatted, 'utf8');
             });
           }).on('error', (err) => {
@@ -84,8 +81,6 @@ jobs:
 
       - name: Update README
         run: |
-          cat providers-list.txt
-          
           python3 << 'PYTHON'
           import re
           
@@ -94,46 +89,25 @@ jobs:
           
           providers_list = open('providers-list.txt', 'r').read().strip()
           
-          print("Current README PROVIDER row:")
-          provider_row = re.search(r'\| `PROVIDER` \|.*?\n\|', content)
-          if provider_row:
-              print(provider_row.group(0)[:200])
-          
           # Find and replace the provider list in the PROVIDER table row
-          # The pattern captures the text before the provider list and the line after
           pattern = r'(\| `PROVIDER` \| `""` \| DNS Provider\. Valid values are:<br/>)[^|]*(?=\|)'
-          
-          # Check if pattern matches
-          if re.search(pattern, content):
-              print("Pattern FOUND - performing replacement")
-              updated = re.sub(pattern, r'\1' + providers_list, content)
-          else:
-              print("Pattern NOT FOUND - trying alternative approach")
-              # Alternative: look for Valid values are and everything until the next row
-              pattern2 = r'(Valid values are:<br/>)[^<|]*(<br/>)'
-              if re.search(pattern2, content):
-                  print("Alternative pattern FOUND")
-                  updated = re.sub(pattern2, r'\1' + providers_list + r'\2', content)
-              else:
-                  print("Alternative pattern also NOT FOUND")
-                  updated = content
+          updated = re.sub(pattern, r'\1' + providers_list, content)
           
           with open('README.md', 'w') as f:
               f.write(updated)
-          
-          print("README update complete")
           PYTHON
+
+      - name: Clean up temporary files
+        run: |
+          rm -f fetch-providers.js providers-list.txt
 
       - name: Check if changes exist
         id: changes
         run: |
           if git diff --quiet README.md; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No changes detected"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected:"
-            git diff README.md | head -30
           fi
 
       - name: Create Pull Request
